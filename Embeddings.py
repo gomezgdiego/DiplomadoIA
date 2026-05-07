@@ -29,7 +29,7 @@ print("Modelo de embeddings 'gte-small' cargado correctamente.\n")
 textos_hogar = [
     "water", "fire", "ash", "sun", "sea",
     "fish", "running on the sand",
-    "sand", "shark"
+    "sand", "shark", "fish", "ocean"
 ]
 
 # Genera los embeddings del diccionario base.
