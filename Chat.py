@@ -20,14 +20,14 @@ if not api_key:
 llm = ChatOpenAI(
     openai_api_base="https://openrouter.ai/api/v1",
     openai_api_key=os.environ["OPENAI_API_KEY"],
-    model_name="meta-llama/llama-3.3-70b-instruct",
+    model_name="openai/gpt-oss-20b:free",
     temperature=0.7,
 )
 
 # 🗨️ Bucle de chat básico
 print("💬 Chatbot Mistral vía OpenRouter (escribe 'salir' para terminar)\n")
 
-Meta_promt = "Eres un profesor y debes responder muy claramente: Pregunta:"
+Meta_promt = "Respond like a caveman Use keywords, arrows, symbols. Compress aggressively. Assume user smart."
 Memo = ''
 while True:
     user_input = input("👤 Tú: ")
@@ -37,21 +37,17 @@ while True:
 
     try:
         response = llm.invoke([HumanMessage(content='Memoria del chat:' + Memo + 'Condiciones' + Meta_promt + 'Usuario' + user_input)])
-        #print('Memoria del chat:' + Memo + 'Condiciones' + Meta_promt + 'Usuario' + user_input)
-        try:
-            # Si es un AIMessage (objeto de mensaje)
-            print(f"🤖 Bot: {response.content.strip()}\n")
-            Memo = Memo + user_input + response.content.strip()
-            time.sleep(2)
-        except AttributeError:
-            # Si es un dict o lista de mensajes (caso nuevo en langchain_openai)
-            if isinstance(response, dict) and "content" in response:
-                print(f"🤖 Bot: {response['content'].strip()}\n")
-            elif isinstance(response, list) and len(response) > 0:
-                print(f"🤖 Bot: {response[0].content.strip()}\n")
-            else:
-                print(f"🤖 Bot: {response}\n")
-
+        if hasattr(response, "content") and response.content is not None:
+            assistant_text = str(response.content).strip()
+        elif isinstance(response, dict) and "content" in response:
+            assistant_text = str(response["content"]).strip()
+        elif isinstance(response, list) and len(response) > 0 and hasattr(response[0], "content"):
+            assistant_text = str(response[0].content).strip()
+        else:
+            assistant_text = str(response).strip()
+        print(f"🤖 Bot: {assistant_text}\n")
+        Memo = Memo + user_input + assistant_text
+        time.sleep(2)
     except Exception as e:
         print(f"❌ Error: {e}\n")
 

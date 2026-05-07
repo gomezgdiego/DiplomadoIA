@@ -136,9 +136,9 @@ def chat_with_rag(cfg: Dict):
         # Construir prompt combinado
         Meta_prompt = (
             f"{system_instruction}\n\n"
-            f"-----------------------------------------------------------------"
+            f"-----------------------------------------------------------------\n"
             f"Contexto más relevante (similitud={score:.4f}):\n{best_text}\n\n"
-            f"-----------------------------------------------------------------"
+            f"-----------------------------------------------------------------\n"
             f"Pregunta del usuario:\n{user_input}"
         )
 
